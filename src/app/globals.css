@@ -1,0 +1,158 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #ffffff;
+  --color-cream: #f5f5f4;
+  --color-ink: #1c1917;
+  --color-muted: #64615d;
+  --color-line: #e9e7e4;
+  --color-brand: #f97316;
+  --color-brand-dark: #ea580c;
+  --color-brand-ink: #c2410c;
+  --color-brand-soft: #fff4eb;
+
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 1.5rem;
+  --shadow-soft: 0 1px 2px rgb(28 25 23 / 0.04), 0 8px 24px -12px rgb(28 25 23 / 0.14);
+  --shadow-lift: 0 2px 4px rgb(28 25 23 / 0.05), 0 22px 44px -18px rgb(28 25 23 / 0.28);
+  --shadow-brand: 0 8px 20px -10px rgb(234 88 12 / 0.45);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-brand-soft);
+}
+
+@utility container-page {
+  @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+}
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-[15px] font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply btn bg-brand text-white shadow-brand hover:bg-brand-dark;
+}
+@utility btn-dark {
+  @apply btn bg-ink text-paper hover:bg-black;
+}
+@utility btn-ghost {
+  @apply btn border border-line bg-white text-ink hover:border-ink;
+}
+@utility eyebrow {
+  @apply text-xs font-bold tracking-[0.14em] text-brand-ink uppercase;
+}
+@utility h-display {
+  @apply font-display font-extrabold tracking-[-0.03em] text-balance;
+}
+
+.prose-gift {
+  @apply text-[17px] leading-[1.75] text-ink/90;
+}
+.prose-gift p {
+  @apply my-5;
+}
+.prose-gift h2 {
+  @apply font-display mt-12 mb-4 text-3xl font-bold tracking-tight text-ink;
+}
+.prose-gift h3 {
+  @apply mt-8 mb-3 text-xl font-semibold text-ink;
+}
+.prose-gift a:not(.no-underline) {
+  @apply font-semibold text-brand-ink underline decoration-brand/40 underline-offset-4 hover:decoration-brand;
+}
+.prose-gift ul {
+  @apply my-5 list-disc space-y-2 pl-6;
+}
+.prose-gift strong {
+  @apply font-semibold text-ink;
+}
+
+/* 3D tilt cards — see components/Tilt.tsx */
+.tilt {
+  position: relative;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.3s;
+}
+.tilt:hover {
+  transition-duration: 0.15s, 0.3s;
+}
+/* Everything sits a hair in front of the card's own background — at exactly
+   z = 0, preserve-3d may depth-sort children behind it. */
+.tilt > * {
+  transform: translateZ(1px);
+}
+.tilt-layer {
+  transform: translateZ(2px);
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.tilt:hover .tilt-layer,
+.group:focus-visible .tilt-layer {
+  transform: translateZ(var(--z, 24px));
+}
+.tilt-glare {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgb(255 255 255 / 0.5), transparent 50%);
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  transition: opacity 0.3s;
+  transform: translateZ(60px);
+}
+.tilt:hover .tilt-glare {
+  opacity: 1;
+}
+/* Perspective grid "floor" the editor's picks stand on */
+.stage-floor {
+  background-image: linear-gradient(rgb(249 115 22 / 0.5) 1px, transparent 1px), linear-gradient(90deg, rgb(249 115 22 / 0.5) 1px, transparent 1px);
+  background-size: 56px 56px;
+  background-position: center bottom;
+  transform: perspective(420px) rotateX(62deg);
+  transform-origin: bottom;
+  mask-image: linear-gradient(to top, black 10%, transparent 85%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt,
+  .tilt-layer,
+  .tilt:hover .tilt-layer {
+    transform: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-rise {
+  animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
